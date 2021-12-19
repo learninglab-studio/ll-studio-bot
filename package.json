@@ -1,0 +1,27 @@
+{
+  "name": "ll-studio-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/learninglab-studio/ll-studio-bot.git"
+  },
+  "author": "Marlon Kuzmick",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/learninglab-studio/ll-studio-bot/issues"
+  },
+  "homepage": "https://github.com/learninglab-studio/ll-studio-bot#readme",
+  "dependencies": {
+    "@slack/bolt": "^3.8.1",
+    "airtable": "^0.11.1",
+    "atem-connection": "^2.4.0",
+    "colors": "^1.4.0",
+    "dotenv": "^10.0.0"
+  }
+}
