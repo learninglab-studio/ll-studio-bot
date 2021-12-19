@@ -9,8 +9,7 @@ exports.file = async ({ event, client}) => {
         const result = await client.files.info({
           file: event.file_id,
         });
-        console.log(`\nhere's the event:\n\n${JSON.stringify(event, null, 4)}`)
-        console.log(`\nhere's the result:\n\n${JSON.stringify(result, null, 4)}`)
+        console.log(`\nhere's the client.files.info result:\n\n${JSON.stringify(result, null, 4)}`)
         if (result.file.public_url_shared !== true) {
           const publicResult = await client.files.sharedPublicURL({
             token: process.env.SLACK_USER_TOKEN,
