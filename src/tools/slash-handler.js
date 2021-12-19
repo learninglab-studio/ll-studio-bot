@@ -20,7 +20,6 @@ exports.a8ksync = async ({ command, ack, say }) => {
             await say(`syncing to ${time}`)
         }
     })
-
 }
 
 exports.rocket = async ({ message, say }) => {

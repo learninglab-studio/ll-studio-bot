@@ -4,6 +4,8 @@ require('dotenv').config();
 const messageHandler = require('./src/tools/message-handler.js');
 const eventHandler = require('./src/tools/event-handler.js');
 const slashHandler = require('./src/tools/slash-handler.js');
+const shortcutHandler = require('./src/tools/shortcut-handler.js');
+
 
 const app = new App({
     token: process.env.SLACK_BOT_TOKEN,
@@ -17,10 +19,25 @@ app.message('hello', messageHandler.hello);
 app.message(/.*/, async ({ message })=> {console.log(JSON.stringify(message, null, 4))});
 
 app.command('/switch', slashHandler.switch);
-// app.command('/a8ksync', slashHandler.a8ksync);
+app.command('/a8ksync', slashHandler.a8ksync);
 
-app.event(/file/, eventHandler.file);
+app.event("file_shared", eventHandler.fileShared);
+app.event("reaction_added", eventHandler.reactionAdded);
+app.event("reaction_removed", eventHandler.reactionRemoved);
+app.event('pin_added', eventHandler.pinAdded);
+app.event('pin_removed', eventHandler.pinRemoved);
 app.event(/.*/, eventHandler.log);
+
+app.shortcut(`show_your_work`, shortcutHandler.showYourWork);
+app.shortcut(`send_me_markdown`, shortcutHandler.sendMeMarkdown);
+app.shortcut(/.*/, shortcutHandler.log);
+
+// (/.*/, async ({shortcut, ack, context}) => {
+//   await ack();
+//   console.log(JSON.stringify(shortcut, null, 4))
+//   // Do stuff
+// })
+
 
 (async () => {
   await app.start(process.env.PORT || 3000);
