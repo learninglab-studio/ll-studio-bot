@@ -1,5 +1,7 @@
 const { blue, yellow, cyan, magenta } = require('./mk-utilities')
 const airtableTools = require(`./airtable-tools`)
+const fcpxmlTools =  require('./fcpxml-tools')
+const { prepareStepArgs } = require('@slack/bolt/dist/WorkflowStep')
 
 function makeSlackImageURL (permalink, permalink_public) {
   let secrets = (permalink_public.split("slack-files.com/")[1]).split("-")
@@ -53,6 +55,8 @@ exports.fileShared = async ({ event, client}) => {
       catch (error) {
         console.error(error);
       }
+    } else if (event.type == "file_shared" && event.channel_id == process.env.SLACK_FCPXML_CHANNEL) {
+      fcpxmlTools(event)
     } else {
       try {
         yellow(`got a file_shared event, but not in the #create-external-link channel`);
@@ -69,7 +73,7 @@ exports.log = async ({ event }) => {
     blue(`got that message with ts ${event.ts} as an event too, but we'll be handling it as a message in most cases.`)
   } else {
     yellow(`currently unhandled event of type ${event.type}:`)
-    cyan(event)
+    cyan(JSON.stringify(event))
   }
 }
 
