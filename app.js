@@ -1,5 +1,7 @@
 const { App } = require('@slack/bolt');
 require('dotenv').config();
+var path = require('path');
+global.ROOT_DIR = path.resolve(__dirname);
 
 const messageHandler = require('./src/tools/message-handler.js');
 const eventHandler = require('./src/tools/event-handler.js');

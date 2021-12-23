@@ -1,35 +1,30 @@
 const { yellow, blue, magenta, cyan } = require('./mk-utilities')
 const fs = require(`fs`)
-import fetch from 'node-fetch';
+const axios = require(`axios`)
+const path = require(`path`)
 
-module.exports = (event) => {
+module.exports.handleSlackedFcpxml = async (event, client, fileInfo) => {
     magenta(`got an fcpxml event`)
     magenta(event)
+    cyan(`here we'd download file with id: ${event.file.id}`)
+    const filePath = path.resolve(ROOT_DIR, '.tests', 'fcpxml', 'test.fcpxml')
+    cyan(`and we'd do download it to path: ${filePath}`)
+    // await downloadFromSlack(fileInfo.file.url_private_download, filePath)
+    await downloadFromSlack(fileInfo.file.url_private, filePath)
+    return (`done`)
 }
 
-const downloadFromSlack = async function (url, token) {
-
+const downloadFromSlack = async (url, path, options) => {
+    const writer = fs.createWriteStream(path)
+    const response = await axios({
+        url,
+        method: 'GET',
+        headers: { Authorization: `Bearer ${process.env.SLACK_BOT_TOKEN}` },
+        responseType: 'stream'
+    })
+    response.data.pipe(writer)
+    return new Promise((resolve, reject) => {
+    writer.on('finish', resolve)
+    writer.on('error', reject)
+    })
 }
-const downloadFile = (async (url, path) => {
-    const res = await fetch(url);
-    const fileStream = fs.createWriteStream(path);
-    await new Promise((resolve, reject) => {
-        res.body.pipe(fileStream);
-        res.body.on("error", reject);
-        fileStream.on("finish", resolve);
-        });
-});
-
-
-// import {createWriteStream} from 'fs';
-// import {pipeline} from 'stream';
-// import {promisify} from 'util'
-// import fetch from 'node-fetch';
-
-// const streamPipeline = promisify(pipeline);
-
-// const response = await fetch('https://github.githubassets.com/images/modules/logos_page/Octocat.png');
-
-// if (!response.ok) throw new Error(`unexpected response ${response.statusText}`);
-
-// await streamPipeline(response.body, createWriteStream('./octocat.png'));
