@@ -1,4 +1,4 @@
-const atemTools = require(`./atem-tools`)
+const atemTools = require(`./utilities/atem-tools`)
 
 exports.switch = async ({ command, ack, say }) => {
     ack();

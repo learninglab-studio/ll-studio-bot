@@ -1,4 +1,4 @@
-const atemTools = require(`./atem-tools`)
+const atemTools = require(`./utilities/atem-tools`)
 
 exports.hello = async ({ message, say }) => {
     // say() sends a message to the channel where the event was triggered

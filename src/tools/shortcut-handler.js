@@ -1,5 +1,5 @@
-const { blue, yellow, cyan, magenta } = require('./mk-utilities')
-const airtableTools = require(`./airtable-tools`)
+const { blue, yellow, cyan, magenta } = require('./utilities/mk-utilities')
+const airtableTools = require(`./utilities/airtable-tools`)
   
 exports.log = async ({ ack, shortcut, context }) => {
     await ack()

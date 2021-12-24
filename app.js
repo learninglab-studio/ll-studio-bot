@@ -28,6 +28,7 @@ app.event("reaction_added", eventHandler.reactionAdded);
 app.event("reaction_removed", eventHandler.reactionRemoved);
 app.event('pin_added', eventHandler.pinAdded);
 app.event('pin_removed', eventHandler.pinRemoved);
+app.event('app_home_opened', eventHandler.appHomeOpened);
 app.event(/.*/, eventHandler.log);
 
 app.shortcut(`show_your_work`, shortcutHandler.showYourWork);

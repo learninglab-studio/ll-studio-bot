@@ -1,4 +1,4 @@
-const { yellow, blue, magenta, cyan } = require('./mk-utilities')
+const { yellow, blue, magenta, cyan } = require('../utilities/mk-utilities')
 const fs = require(`fs`)
 const axios = require(`axios`)
 const path = require(`path`)
