@@ -17,19 +17,18 @@ exports.fileShared = async ({ event, client}) => {
     yellow(`handing ${event.file_id}, here's the fileInfo;`)
     yellow(fileInfo)
     if (event.channel_id == process.env.SLACK_EXTERNAL_LINKS_CHANNEL && handledImageFiles.includes(fileInfo.file.mimetype) ) {
-      handleImageFile(event, client, fileInfo)
+      await handleImageFile(event, client, fileInfo)
+      magenta(`handled image file`)
     } else if (event.channel_id == process.env.SLACK_FCPXML_CHANNEL && path.extname(fileInfo.file.name) == ".fcpxml" ) {
       yellow(`handling ${fileInfo.file.name} with ext ${path.extname(fileInfo.file.name)}`)
       cyan(event)
-      handleSlackedFcpxml(event, client, fileInfo)
+      await handleSlackedFcpxml(event, client, fileInfo)
     }
   } catch (error) {
     yellow(`eventHandler.fileShared failed`)
     console.error(error)
   }
 }
-
-
 
 exports.reactionAdded = async ({ event }) => {
   yellow(`got a reactionAdded: ${event.type}:`)
@@ -43,7 +42,6 @@ exports.reactionRemoved = async ({ event }) => {
 
 exports.appHomeOpened = appHomeHandler
 
-
 exports.log = async ({ event }) => {
   const handledEvents = ["message","reaction_added", "reaction_removed", "app_home_opened", "file_shared"]
   if (handledEvents.includes(event.type)) {
@@ -54,5 +52,3 @@ exports.log = async ({ event }) => {
     cyan(JSON.stringify(event))
   }
 }
-
-

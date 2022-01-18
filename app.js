@@ -8,7 +8,6 @@ const eventHandler = require('./src/tools/event-handler.js');
 const slashHandler = require('./src/tools/slash-handler.js');
 const shortcutHandler = require('./src/tools/shortcut-handler.js');
 
-
 const app = new App({
     token: process.env.SLACK_BOT_TOKEN,
     signingSecret: process.env.SLACK_SIGNING_SECRET,
@@ -18,7 +17,7 @@ const app = new App({
   });
 
 app.message('hello', messageHandler.hello);
-app.message(/.*/, async ({ message })=> {console.log(JSON.stringify(message, null, 4))});
+app.message(/.*/, messageHandler.parseAll);
 
 app.command('/switch', slashHandler.switch);
 app.command('/a8ksync', slashHandler.a8ksync);
@@ -29,11 +28,12 @@ app.event("reaction_removed", eventHandler.reactionRemoved);
 app.event('pin_added', eventHandler.pinAdded);
 app.event('pin_removed', eventHandler.pinRemoved);
 app.event('app_home_opened', eventHandler.appHomeOpened);
-app.event(/.*/, eventHandler.log);
+// app.event('message', eventHandler.message);
+// app.event(/.*/, eventHandler.log);
 
 app.shortcut(`show_your_work`, shortcutHandler.showYourWork);
 app.shortcut(`send_me_markdown`, shortcutHandler.sendMeMarkdown);
-app.shortcut(/.*/, shortcutHandler.log);
+// app.shortcut(/.*/, shortcutHandler.log);
 
 // (/.*/, async ({shortcut, ack, context}) => {
 //   await ack();

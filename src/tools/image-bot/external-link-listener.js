@@ -1,3 +1,5 @@
+const airtableTools = require(`../utilities/airtable-tools`)
+
 function makeSlackImageURL (permalink, permalink_public) {
     let secrets = (permalink_public.split("slack-files.com/")[1]).split("-")
     let suffix = permalink.split("/")[(permalink.split("/").length - 1)]
@@ -21,23 +23,24 @@ const externalLinkListener = async function (event, client, fileInfo) {
             baseId: process.env.AIRTABLE_STUDIO_BOT_BASE,
             table: "PublicImages",
             record: {
-                "Name": result.file.title,
+                "Name": fileInfo.file.title,
                 "SlackEventJSON": JSON.stringify(event, null, 4),
-                "SlackFileInfoJSON": JSON.stringify(result, null, 4),
+                "SlackFileInfoJSON": JSON.stringify(fileInfo, null, 4),
                 "ImageFiles": [
                     {
                     "url": makeSlackImageURL(fileInfo.file.permalink, fileInfo.file.permalink_public)
                     }
                 ],
-                "Status": "no-status"
-                
+                "Status": "no-status",
+                "SharedBySlackID": event.user_id,
+                "SavedBySlackID": event.user_id  
             }
         })
         } else {
-        console.log(`file was already public: ${result.file.url_private} is what we'd handle`);
+        console.log(`file was already public: ${fileInfo.file.url_private} is what we'd handle`);
         const mdPostResult = await client.chat.postMessage({
             channel: event.user_id,
-            text: `posted a photo! but it was already public: ${makeSlackImageURL(result.file.permalink, result.file.permalink_public)}.\n\nhere's your markdown:\n\`\`\`![alt text](${makeSlackImageURL(result.file.permalink, result.file.permalink_public)})\`\`\``
+            text: `posted a photo! but it was already public: ${makeSlackImageURL(fileInfo.file.permalink, fileInfo.file.permalink_public)}.\n\nhere's your markdown:\n\`\`\`![alt text](${makeSlackImageURL(fileInfo.file.permalink, fileInfo.file.permalink_public)})\`\`\``
         })
         }
     }
