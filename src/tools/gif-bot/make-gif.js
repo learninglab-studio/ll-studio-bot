@@ -27,6 +27,7 @@ const determineDimensions = async (file) => {
 }
 
 
+
 module.exports = async function(settings){
   
   var gifBasename = path.basename(normFilePath, path.extname(filePath));
