@@ -7,17 +7,17 @@ module.exports.handleSlackedFcpxml = async (event, client, fileInfo) => {
     magenta(`got an fcpxml event`)
     magenta(event)
     cyan(`here we'd download file with id: ${event.file.id}`)
-    const filePath = path.resolve(ROOT_DIR, '.tests', 'fcpxml', 'test.fcpxml')
+    const filePath = path.resolve(process.env.TEMP_STORAGE_ROOT, 'tests', 'fcpxml', 'test.fcpxml')
     cyan(`and we'd do download it to path: ${filePath}`)
     // await downloadFromSlack(fileInfo.file.url_private_download, filePath)
     await downloadFromSlack(fileInfo.file.url_private, filePath)
     return (`done`)
 }
 
-const downloadFromSlack = async (url, path, options) => {
-    const writer = fs.createWriteStream(path)
+const downloadFromSlack = async (url, downloadPath, options) => {
+    const writer = fs.createWriteStream(downloadPath)
     const response = await axios({
-        url,
+        url: url,
         method: 'GET',
         headers: { Authorization: `Bearer ${process.env.SLACK_BOT_TOKEN}` },
         responseType: 'stream'

@@ -31,3 +31,11 @@ module.exports.magenta = (thing) => {
         console.log(colors.magenta(JSON.stringify(thing, null, 4)))
     }
 }
+
+module.exports.gray = (thing) => {
+    if (typeof thing == "string") {
+        console.log(colors.gray(thing))
+    } else {
+        console.log(colors.gray(JSON.stringify(thing, null, 4)))
+    }
+}

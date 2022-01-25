@@ -1,56 +1,57 @@
 var cp = require('child_process');
+const { gray, magenta } = require('../utilities/mk-utilities');
 var fs = require('fs');
 var path = require('path');
+const axios = require('axios')
 
-const downloadFromSlack = async (url, path, options) => {
-    const writer = fs.createWriteStream(path)
-    const response = await axios({
-        url,
-        method: 'GET',
-        headers: { Authorization: `Bearer ${process.env.SLACK_BOT_TOKEN}` },
-        responseType: 'stream'
-    })
-    response.data.pipe(writer)
-    return new Promise((resolve, reject) => {
-    writer.on('finish', resolve)
-    writer.on('error', reject)
-    })
+const downloadFromSlack = async (url, downloadPath, options) => {
+  const writer = fs.createWriteStream(downloadPath)
+  const response = await axios({
+      url: url,
+      method: 'GET',
+      headers: { Authorization: `Bearer ${process.env.SLACK_BOT_TOKEN}` },
+      responseType: 'stream'
+  })
+  response.data.pipe(writer)
+  return new Promise((resolve, reject) => {
+  writer.on('finish', resolve)
+  writer.on('error', reject)
+  })
 }
 
-const makeGif = async (file) => {
-    const gifPath = path.join(ROOT_DIR, temp, `${path.basename(file, path.extname(file))}_200.gif`)
-    const palettePath = path.join(ROOT_DIR, temp, `${path.basename(file, path.extname(file))}_palette.png`)
+function makeSlackImageURL (permalink, permalink_public) {
+  let secrets = (permalink_public.split("slack-files.com/")[1]).split("-")
+  let suffix = permalink.split("/")[(permalink.split("/").length - 1)]
+  let filePath = `https://files.slack.com/files-pri/${secrets[0]}-${secrets[1]}/${suffix}?pub_secret=${secrets[2]}`
+  return filePath
 }
 
-const determineDimensions = async (file) => {
-    const fileData = await llProbe(file)
-}
-
-
-
-module.exports = async function(settings){
-  
-  var gifBasename = path.basename(normFilePath, path.extname(filePath));
-  var palettePath = path.join(settings.gifFolder,
-    (gifBasename + "_palette.png"));
-  var height = settings.height ? settings.height : 270;
-  var width = settings.width ? settings.width : 480;
-  var gifPath = path.join(settings.gifFolder,
-    (gifBasename + '_' + height
-    + ".gif"));
-  var htmlPath = path.join(settings.gifFolder,
-    (gifBasename + "_index.html"));
-  cp.spawnSync(process.env.FFMPEG_PATH, ['-i', filePath, '-vf',
+const makeGif = async (file, cb) => {
+  const gifPath = path.join(process.env.TEMP_STORAGE_ROOT, "gif", `${path.basename(file, path.extname(file))}_200.gif`)
+  const palettePath = path.join(process.env.TEMP_STORAGE_ROOT, "gif", `${path.basename(file, path.extname(file))}_palette.png`)
+  const width = 355
+  const height = 200
+  await cp.spawnSync('ffmpeg', ['-i', file, '-vf',
     'palettegen', palettePath]);
-  cp.spawnSync(process.env.FFMPEG_PATH, ['-i', filePath, '-i',
+  await cp.spawnSync('ffmpeg', ['-i', file, '-i',
     palettePath, '-vf', ('scale=' + width + ":"
     + height), '-y', gifPath]);
-  if (settings.html) {
-    fse.writeFileSync(htmlPath, makeHtml(gifPath, palettePath, (JSON.stringify(settings, null, 4))), 'utf-8');
-    cp.spawnSync('open', [htmlPath]);
-  }
-  var pixelDataArray = await analyzePng(palettePath);
-  console.log(JSON.stringify(pixelDataArray));
-  console.log("htmlPath: " + htmlPath);
-  return
+  await fs.unlinkSync(palettePath)
+  return ("done")
+}
+
+// const determineDimensions = async (file) => {
+//     const fileData = await llProbe(file)
+// }
+
+module.exports = async function(settings){
+  magenta(`launching make-gif for ${settings.fileInfo.file.url_private}`)
+  const downloadPath = path.join(process.env.TEMP_STORAGE_ROOT, 'gif', path.basename(settings.fileInfo.file.url_private))
+  const downloadResult = await downloadFromSlack(settings.fileInfo.file.url_private, downloadPath)  
+  const gifResult = await makeGif(downloadPath)
+  const slackResult = await settings.client.files.upload({
+    file: "/Users/purple/Development/ll-studio-bot/_temp/gif/jk-cd-gif-1_200.gif",
+    channel: process.env.SLACK_CREATE_GIF_CHANNEL
+  })
+  return ({downloadPath: downloadPath, gifResult: gifResult})
 };

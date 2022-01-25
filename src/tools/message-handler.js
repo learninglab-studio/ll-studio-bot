@@ -1,6 +1,7 @@
 const atemTools = require(`./utilities/atem-tools`);
 const { cyan, magenta, yellow, blue } = require("./utilities/mk-utilities");
-const resourceFromMessageLink = require(`./resource-bot/resource-from-message-link`)
+const resourceFromMessageLink = require(`./resource-bot/resource-from-message-link`);
+const makeGif = require(`./gif-bot/make-gif`)
 
 exports.hello = async ({ message, say }) => {
     // say() sends a message to the channel where the event was triggered
@@ -22,8 +23,8 @@ exports.parseAll = async ({ message, say }) => {
         magenta(theResource)
         await say(`got a message in the resource channel`) 
     } else {
-        magenta(`some other message we aren't handling now`)
-        yellow(message)
+        magenta(`some other message we aren't handling now--uncomment message-handler line 27 to get the json`)
+        // yellow(message)
     }
 }
 

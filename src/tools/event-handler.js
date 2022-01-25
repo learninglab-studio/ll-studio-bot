@@ -4,6 +4,7 @@ const { handleSlackedFcpxml } =  require('./fcpxml-bot/fcpxml-tools')
 const path = require('path')
 const appHomeHandler = require('./app-home-handler')
 const handleImageFile = require(`./image-bot/external-link-listener`)
+const makeGif = require('./gif-bot/make-gif')
 // const { prepareStepArgs } = require('@slack/bolt/dist/WorkflowStep')
 
 exports.fileShared = async ({ event, client}) => {
@@ -23,7 +24,21 @@ exports.fileShared = async ({ event, client}) => {
       yellow(`handling ${fileInfo.file.name} with ext ${path.extname(fileInfo.file.name)}`)
       cyan(event)
       await handleSlackedFcpxml(event, client, fileInfo)
-    }
+    } else if (event.channel_id == process.env.SLACK_CREATE_GIF_CHANNEL) {
+        if (["mp4", "mov"].includes(fileInfo.file.filetype)) {
+          yellow(`handling movie ${fileInfo.file.name} with ext ${path.extname(fileInfo.file.name)}`)
+          const gifResult = await makeGif({
+            fileInfo: fileInfo,
+            client: client,
+            event: event,
+            width: 355,
+            height: 200
+          })
+          magenta(gifResult)
+        }
+      cyan(event)
+      // await handleSlackedFcpxml(event, client, fileInfo)
+    } 
   } catch (error) {
     yellow(`eventHandler.fileShared failed`)
     console.error(error)
