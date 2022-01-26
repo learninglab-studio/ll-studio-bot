@@ -26,7 +26,7 @@ function makeSlackImageURL (permalink, permalink_public) {
   return filePath
 }
 
-const makeGif = async (file, cb) => {
+const makeGif = async (file) => {
   const gifPath = path.join(process.env.TEMP_STORAGE_ROOT, "gif", `${path.basename(file, path.extname(file))}_200.gif`)
   const palettePath = path.join(process.env.TEMP_STORAGE_ROOT, "gif", `${path.basename(file, path.extname(file))}_palette.png`)
   const width = 355
@@ -37,7 +37,10 @@ const makeGif = async (file, cb) => {
     palettePath, '-vf', ('scale=' + width + ":"
     + height), '-y', gifPath]);
   await fs.unlinkSync(palettePath)
-  return ("done")
+  return ({
+    gifPath: gifPath,
+    videoPath: file
+  })
 }
 
 // const determineDimensions = async (file) => {
@@ -50,8 +53,12 @@ module.exports = async function(settings){
   const downloadResult = await downloadFromSlack(settings.fileInfo.file.url_private, downloadPath)  
   const gifResult = await makeGif(downloadPath)
   const slackResult = await settings.client.files.upload({
-    file: "/Users/purple/Development/ll-studio-bot/_temp/gif/jk-cd-gif-1_200.gif",
-    channel: process.env.SLACK_CREATE_GIF_CHANNEL
+    file: fs.createReadStream(gifResult.gifPath),
+    initial_comment: `gif from ${settings.fileInfo.file.name}`,
+    filename: path.basename(gifResult.gifPath),
+    title: `title for ${path.basename(gifResult.gifPath)}`,
+    // channel: process.env.SLACK_CREATE_GIF_CHANNEL
+    channels: settings.fileInfo.file.channels[0]
   })
   return ({downloadPath: downloadPath, gifResult: gifResult})
 };
