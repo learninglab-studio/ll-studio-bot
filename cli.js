@@ -8,7 +8,7 @@ var clear = require('clear');
 // const m2s = require('./tools/m2s/index.js')
 // const { secs2hms, secs2tc } = require('./tools/utilities/ll-time-tools')
 // const processRenamedFolder = require('./tools/ingest/process-renamed-folder')
-// const makePeakGif = require('./tools/gifs/make-peak-gif')
+const makePeakGif = require('./src/tools/gif-bot/make-peak-gif')
 
 require('dotenv').config();
 

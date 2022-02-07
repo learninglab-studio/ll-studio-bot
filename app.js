@@ -17,10 +17,11 @@ const app = new App({
   });
 
 app.message('hello', messageHandler.hello);
-app.message(/.*/, messageHandler.parseAll);
+// app.message(/.*/, messageHandler.parseAll);
 
 app.command('/switch', slashHandler.switch);
 app.command('/a8ksync', slashHandler.a8ksync);
+// app.command('/synca8k', slashHandler.synca8k);
 
 app.event("file_shared", eventHandler.fileShared);
 app.event("reaction_added", eventHandler.reactionAdded);
