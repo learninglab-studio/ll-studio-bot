@@ -25,8 +25,8 @@ function createOptions(videofilePath, settings){
   newSettings.outputFolder = settings.outputFolder ? settings.outputFolder 
     : process.env.PEAKGIF_OUTPUT_FOLDER ? process.env.PEAKGIF_OUTPUT_FOLDER : path.dirname(videofilePath);
   newSettings.basename = path.basename(newSettings.normFilePath, path.extname(videofilePath));
-  newSettings.height = settings.height ? settings.height : 203;
-  newSettings.width = settings.width ? settings.width: 360;
+  newSettings.height = settings.height ? settings.height : 540;
+  newSettings.width = settings.width ? settings.width: 960;
   newSettings.palettePath = path.join(newSettings.outputFolder, (newSettings.basename + "_palette.png"));
   newSettings.gifPath = path.join(newSettings.outputFolder, (newSettings.basename + "_" + newSettings.height + ".gif"));
   newSettings.segmentPath = path.join(newSettings.outputFolder, (newSettings.basename + "_segment.mov"));
@@ -108,6 +108,7 @@ function getMovingAverage(arr, frames){
       adjustment: (theAverageLevel - e.level)
     }
   });
+  magenta(newArray)
   return newArray;
 }
 
