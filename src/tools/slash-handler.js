@@ -10,6 +10,12 @@ exports.switch = async ({ command, ack, say }) => {
     })
 }
 
+exports.log = async ({ command, ack, say }) => {
+    ack();
+    console.log(`log request`)
+    console.log(JSON.stringify(command, null, 4))
+}
+
 exports.a8ksync = async ({ command, ack, say }) => {
     ack();
     console.log(JSON.stringify(command, null, 4))
@@ -21,8 +27,6 @@ exports.a8ksync = async ({ command, ack, say }) => {
         }
     })
 }
-
-
 
 exports.rocket = async ({ message, say }) => {
     await say(`thanks for the :rocket:, <@${message.user}>`);

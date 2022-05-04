@@ -45,5 +45,3 @@ module.exports.syncToClock = async (options) => {
         console.log(`sorry, we couldn't connect to the ATEM`);
     }, 10000)
 }
-
-
