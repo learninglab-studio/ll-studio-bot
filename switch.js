@@ -36,7 +36,7 @@ if (yargs) {
    console.log(JSON.stringify(yargs, null, 4))
    console.log(`switching to ${yargs._[0]}`)
    doTheThing(yargs._[0])
-   console.log("done")
+//    console.log("done")
 } else {
     console.log(`sorry, you didn't enter a recognized command.`)
 }
