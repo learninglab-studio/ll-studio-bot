@@ -15,7 +15,7 @@ const makeShootProxy = async function (folder, options) {
     magenta(divider, `listOfOperations`, divider)
     gray(listOfOperations)
     const result = await performOperations(listOfOperations)
-    const jobEnd = newDate()
+    const jobEnd = new Date()
     const jobDuration = intervalToDuration({
         start: jobStart,
         end: jobEnd
