@@ -1,41 +1,34 @@
 var colors = require('colors')
 
-module.exports.blue = (thing) => {
-    if (typeof thing == "string") {
-        console.log(colors.blue(thing))
-    } else {
-        console.log(colors.blue(JSON.stringify(thing, null, 4)))
-    }
+const ansiColors = {
+    black: `\u001b[30m`,
+    red: `\u001b[31m`,
+    green: `\u001b[32m`,
+    yellow: `\u001b[38;5;11m`,
+    blue: `\u001b[34m`,
+    magenta: `\u001b[35m`,
+    cyan: `\u001b[36m`,
+    white: `\u001b[37m`,
+    reset: `\u001b[0m`,
+    gray: `\u001b[38;5;245m`,
 }
 
-module.exports.cyan = (thing) => {
-    if (typeof thing == "string") {
-        console.log(colors.cyan(thing))
-    } else {
-        console.log(colors.cyan(JSON.stringify(thing, null, 4)))
-    }
+function myTypeOfLog(things, color) {
+    things.forEach(thing => {
+        if (typeof thing == "string") {
+            console.log(`${ansiColors[color]}${thing}${ansiColors.reset}`)
+        } else {
+            console.log(`${ansiColors[color]}${JSON.stringify(thing, null, 4)}${ansiColors.reset}`)
+        }
+    })
 }
 
-module.exports.yellow = (thing) => {
-    if (typeof thing == "string") {
-        console.log(colors.yellow(thing))
-    } else {
-        console.log(colors.yellow(JSON.stringify(thing, null, 4)))
-    }
-}
-
-module.exports.magenta = (thing) => {
-    if (typeof thing == "string") {
-        console.log(colors.magenta(thing))
-    } else {
-        console.log(colors.magenta(JSON.stringify(thing, null, 4)))
-    }
-}
-
-module.exports.gray = (thing) => {
-    if (typeof thing == "string") {
-        console.log(colors.gray(thing))
-    } else {
-        console.log(colors.gray(JSON.stringify(thing, null, 4)))
-    }
-}
+module.exports.blue = (...things) => { myTypeOfLog(things, "blue" ) }
+module.exports.cyan = (...things) => { myTypeOfLog(things, "cyan" ) }
+module.exports.yellow = (...things) => { myTypeOfLog(things, "yellow" ) }
+module.exports.magenta = (...things) => {myTypeOfLog(things, "magenta" ) }
+module.exports.green = (...things) => {myTypeOfLog(things, "green" ) }
+module.exports.red = (...things) => {myTypeOfLog(things, "red" ) }
+module.exports.white = (...things) => {myTypeOfLog(things, "white" ) }
+module.exports.gray = (...things) => {myTypeOfLog(things, "gray" ) }
+module.exports.divider = `#########################################################\n#########################################################`
