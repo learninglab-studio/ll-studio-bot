@@ -16,12 +16,12 @@ const makeShootProxy = async function (folder, options) {
     gray(listOfOperations)
     const result = await performOperations(listOfOperations)
     const jobEnd = new Date()
-    const jobDuration = intervalToDuration({
-        start: jobStart,
-        end: jobEnd
-    })
+    const jobDuration = jobEnd.getTime() - jobStart.getTime()
     magenta(divider, `job took ${jobDuration} to complete`)
-    gray(format(jobDuration, "HH:mm:ss.SSS"))
+    const jobDurationDate = new Date(jobDuration)
+    gray(`took ${jobDurationDate.getMinutes()}:${jobDurationDate.getSeconds()}.${jobDurationDate.getMilliseconds()} `)
+    const interval = intervalToDuration({start: jobStart, end: jobEnd})
+    magenta(interval)
 }
 
 const createListOfOperations = (folder, options) => {
