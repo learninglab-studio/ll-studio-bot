@@ -9,7 +9,8 @@ var clear = require('clear');
 // const { secs2hms, secs2tc } = require('./tools/utilities/ll-time-tools')
 // const processRenamedFolder = require('./tools/ingest/process-renamed-folder')
 const makePeakGif = require('./src/tools/gif-bot/make-peak-gif')
-const { makeShootProxy } = require(`./src/tools/proxy-bot/make-proxy`)
+const { makeShootProxy } = require(`./src/tools/proxy-bot/make-proxy`);
+const watch = require(`./src/tools/button-bot/watcher`)
 
 require('dotenv').config();
 
@@ -34,6 +35,8 @@ if (yargs.mk) {
     makeShootProxy(yargs.proxy, proxyOptions)
 } else if (yargs.peakgif) {
     makePeakGif(yargs.peakgif)
+} else if (yargs.bwFolder) {
+    watch(yargs.bwFolder)
 } else {
     console.log(`sorry, you didn't enter a recognized command.`)
 }

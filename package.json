@@ -27,6 +27,7 @@
     "atem-connection": "^2.4.0",
     "axios": "^0.25.0",
     "cheerio": "^1.0.0-rc.10",
+    "chokidar": "^3.5.3",
     "clear": "^0.1.0",
     "colors": "^1.4.0",
     "csv-parser": "^3.0.0",

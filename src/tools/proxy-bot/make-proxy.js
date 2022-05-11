@@ -1,8 +1,8 @@
 var fs = require('fs');
 var path = require('path');
 var cp = require('child_process');
-var movRegex = /(mov|mp4|mxf|mts|m4v)/i;
-var filesToCopyRegex = /(jpg|wav|png|aac|mp3)/i;
+var movRegex = /(mov|mp4|m4v)/i;
+var filesToCopyRegex = /(jpg|wav|png|aac|mp3|jpeg|drp)/i;
 var ffprobeToJson = require('./ffprobe-to-json');
 const { cyan, blue, yellow, magenta, gray, white, divider } = require(`../utilities/mk-utilities`);
 var intervalToDuration = require('date-fns/intervalToDuration')
