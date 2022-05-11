@@ -84,12 +84,17 @@ const performOperations = async ({ proxyFolder, proxySubfolders, proxies, copies
 }
 
 var transcodeFile = async function(file, proxyPath, options){
+    magenta(divider)
+    blue(`transcoding ${file}`)
+    magenta(divider)
     await cp.spawnSync('ffmpeg', [
       '-i', file,
       '-c:v', 'libx264',
+    //   `-c:v`, `libx265`,
       '-pix_fmt', 'yuv420p',
-      // '-vf', ('scale='+ outputWidth +':'+outputHeight ),
-      '-preset', 'slow',
+    //   `-tag:v`, `hvc1`, 
+      `-vf`, `scale=-1:540`,
+      '-preset', 'fast',
       '-crf', (options && options.crfVal) ? options.crfVal : '23',
       '-ac', '2',
       '-c:a', 'aac',
