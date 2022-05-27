@@ -14,7 +14,7 @@ const makeBlackandWhite = async function (file) {
         blue(bwPath)
         await cp.spawnSync('ffmpeg', [
             '-i', file,
-            `-vf`, `eq=contrast=2:brightness=0.3:saturation=0`,
+            `-vf`, `eq=contrast=1.5:brightness=0.0:saturation=0`,
             bwPath
           ], {
             stdio: [
