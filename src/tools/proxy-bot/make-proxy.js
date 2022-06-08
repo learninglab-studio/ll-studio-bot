@@ -8,20 +8,74 @@ const { cyan, blue, yellow, magenta, gray, white, divider } = require(`../utilit
 var intervalToDuration = require('date-fns/intervalToDuration')
 var format = require('date-fns/format')
 
+const makeMonthOfProxy = async function (folder, options) {
+    const jobStart = new Date()
+    gray(`starting makeMonthOfProxy at ${format(jobStart, "yyyyMMdd.HH:mm:ss.SSS")} with folder:\n${folder}\nand options:\n${JSON.stringify(options, null, 4)}`)
+    const listOfShootsInMonth = getlistOfShootsInMonth(folder)
+    const monthProxyFolder = `${folder}_proxy`
+    if (!fs.existsSync(monthProxyFolder)){
+        fs.mkdirSync(monthProxyFolder);
+    }
+    magenta(listOfShootsInMonth)
+    for (let i = 0; i < listOfShootsInMonth.length; i++) {
+        const element = listOfShootsInMonth[i];
+        let proxyResult = await makeShootProxy(element, { monthFolder: monthProxyFolder })
+    }
+    const jobEnd = new Date()
+    blue(`time for full month to complete:`)
+    blue(intervalToDuration({start: jobStart, end: jobEnd}))
+}
+
+const makeDayOfProxy = async function (dayFolder, options) {
+    const shootsInDay = []
+    const potentialShoots = fs.readdirSync(dayFolder)
+    for (let i = 0; i < potentialShoots.length; i++) {
+        const potentialShoot = potentialShoots[i];
+        if (fs.lstatSync(path.join(dayFolder, potentialShoot)).isDirectory()) {
+            shootsInDay.push(path.join(dayFolder, potentialShoot))
+        }
+    }
+    blue(shootsInDay)
+}
+
 const makeShootProxy = async function (folder, options) {
     const jobStart = new Date()
     gray(`starting makeShootProxy at ${format(jobStart, "yyyyMMdd.HH:mm:ss.SSS")} with folder:\n${folder}\nand options:\n${JSON.stringify(options, null, 4)}`)
-    const listOfOperations = await createListOfOperations(folder)
+    const listOfOperations = await createListOfOperations(folder, options)
     magenta(divider, `listOfOperations`, divider)
     gray(listOfOperations)
     const result = await performOperations(listOfOperations)
     const jobEnd = new Date()
     magenta(intervalToDuration({start: jobStart, end: jobEnd}))
+    return "done"
+}
+
+const getlistOfShootsInMonth = (folder, options) => {
+    const shootsInMonth = []
+    const daysInMonth = []
+    const potentialDays = fs.readdirSync(folder)
+    for (let i = 0; i < potentialDays.length; i++) {
+        const potentialDay = potentialDays[i];
+        // add regex to check number
+        if (fs.lstatSync(path.join(folder, potentialDay)).isDirectory()) {
+            daysInMonth.push(path.join(folder, potentialDay))
+            const potentialShoots = fs.readdirSync(path.join(folder, potentialDay))
+            for (let j = 0; j < potentialShoots.length; j++) {
+                // add regex to check that the name of folder conforms to shoot structure
+                const potentialShoot = potentialShoots[j];
+                if (fs.lstatSync(path.join(folder, potentialDay, potentialShoot)).isDirectory())  {
+                    shootsInMonth.push(path.join(folder, potentialDay, potentialShoot))
+                }
+            }
+        }
+    }
+    blue(daysInMonth)
+    return shootsInMonth
 }
 
 const createListOfOperations = (folder, options) => {
     const fileOperations = {
-        proxyFolder: path.join(path.dirname(folder), `${path.basename(folder)}.proxy`),
+        proxyFolder: options && options.monthFolder ? path.join(options.monthFolder, `${path.basename(folder)}.proxy`) : path.join(path.dirname(folder), `${path.basename(folder)}.proxy`),
         proxySubfolders: [],
         proxies: [],
         copies: [],
@@ -110,4 +164,5 @@ var transcodeFile = async function(file, proxyPath, options){
 }
 
 module.exports.makeShootProxy = makeShootProxy;
+module.exports.makeMonthOfProxy = makeMonthOfProxy;
 

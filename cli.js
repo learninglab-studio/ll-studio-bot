@@ -9,7 +9,7 @@ var clear = require('clear');
 // const { secs2hms, secs2tc } = require('./tools/utilities/ll-time-tools')
 // const processRenamedFolder = require('./tools/ingest/process-renamed-folder')
 const makePeakGif = require('./src/tools/gif-bot/make-peak-gif')
-const { makeShootProxy } = require(`./src/tools/proxy-bot/make-proxy`);
+const { makeShootProxy, makeMonthOfProxy } = require(`./src/tools/proxy-bot/make-proxy`);
 const watch = require(`./src/tools/button-bot/watcher`)
 
 require('dotenv').config();
@@ -33,6 +33,9 @@ if (yargs.mk) {
 } else if (yargs.proxy) {
     const proxyOptions = {}
     makeShootProxy(yargs.proxy, proxyOptions)
+} else if (yargs.proxyMonth) {
+    const proxyOptions = {}
+    makeMonthOfProxy(yargs.proxyMonth, proxyOptions)
 } else if (yargs.peakgif) {
     makePeakGif(yargs.peakgif)
 } else if (yargs.bwFolder) {
