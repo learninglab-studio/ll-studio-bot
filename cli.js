@@ -11,6 +11,7 @@ var clear = require('clear');
 const makePeakGif = require('./src/tools/gif-bot/make-peak-gif')
 const { makeShootProxy, makeMonthOfProxy } = require(`./src/tools/proxy-bot/make-proxy`);
 const watch = require(`./src/tools/button-bot/watcher`)
+const videoToStills = require(`./src/tools/image-bot/video-to-stills`)
 
 require('dotenv').config();
 
@@ -40,6 +41,8 @@ if (yargs.mk) {
     makePeakGif(yargs.peakgif)
 } else if (yargs.bwFolder) {
     watch(yargs.bwFolder)
+} else if (yargs.v2s) {
+    videoToStills(yargs.v2s)
 } else {
     console.log(`sorry, you didn't enter a recognized command.`)
 }
