@@ -53,6 +53,7 @@ const analyzeAudio = async function (videofilePath, options) {
         proc.stdout.setEncoding("utf8");
         proc.stdout.on('data', function(data) {
             try {
+                console.log(data)
                 fs.appendFileSync(audioDataPath, data);
             } catch (err) {
             console.log("error appending");
