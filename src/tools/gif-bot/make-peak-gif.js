@@ -64,7 +64,7 @@ async function makeStill(setup){
     ]);
     // fs.unlinkSync(setup.palettePath)
     // fs.unlinkSync(setup.segmentPath)
-    return({path: setup.gifPath})
+    return({path: setup.peakStillPath})
 }
 
 function createOptions(videofilePath, settings){
@@ -85,14 +85,13 @@ function createOptions(videofilePath, settings){
   newSettings.offset = settings.offset ? Number(settings.offset) : -48;
   newSettings.timeOffset = newSettings.offset/24 - 1;
   newSettings.html = settings.html ? settings.html : true;
+  newSettings.audioDataPath = path.join(newSettings.outputFolder, `${newSettings.basename}_audiodata.csv`)
   return newSettings;
 };
 
 
 const analyzeAudio = async function (videofilePath, options) {
-  const audioDataPath = path.join(options.outputFolder, `${options.basename}_audiodata.csv`)
-  // delete if already exists
-  if (fs.existsSync(audioDataPath)) { fs.unlinkSync(audioDataPath); }
+  if (fs.existsSync(options.audioDataPath)) { fs.unlinkSync(options.audioDataPath); }
   return new Promise( (resolve, reject) => {
       var proc = cp.spawn('ffprobe', [
           '-f', 'lavfi',
@@ -106,7 +105,7 @@ const analyzeAudio = async function (videofilePath, options) {
       proc.stdout.on('data', function(data) {
           try {
               // console.log(data)
-              fs.appendFileSync(audioDataPath, data);
+              fs.appendFileSync(options.audioDataPath, data);
           } catch (err) {
           console.log("error appending");
           }
@@ -117,7 +116,7 @@ const analyzeAudio = async function (videofilePath, options) {
       proc.on('close', function() {
           console.log('finished child process');
           var audiodataArray = [];
-          fs.createReadStream(audioDataPath)
+          fs.createReadStream(options.audioDataPath)
               .pipe(csv(['level']))
               .on('data', (row) => {
               audiodataArray.push({...row});
@@ -180,16 +179,17 @@ function getMovingAverage(arr, frames){
       adjustment: (theAverageLevel - e.level)
     }
   });
-  magenta(newArray)
+  // magenta(newArray)
   return newArray;
 }
 
 function makeGif(setup) {
-  console.log(`ffmpeg -ss ${setup.startFrame/setup.audioRate - 1} -i ${setup.videofilePath} -t 2.0 -y ${setup.segmentPath}`)
+  console.log(`ffmpeg -ss ${setup.startFrame/setup.audioRate - 1} -i ${setup.videofilePath} -t 2.0 -pix_fmt yuv420p -y ${setup.segmentPath}`)
     cp.spawnSync('ffmpeg', [
         '-ss', (setup.startFrame/setup.audioRate - 1),
         '-i', setup.videofilePath,
         '-t', 2.0, // TODO: let's add this as an option (up to a 10 second limit)
+        '-pix_fmt', 'yuv420p',
         '-y', setup.segmentPath
     ]);
     cp.spawnSync('ffmpeg', [
@@ -202,8 +202,9 @@ function makeGif(setup) {
         '-i', setup.palettePath,
         '-vf', `scale=${setup.width}:${setup.height}`,
         '-y', setup.gifPath]);
-    // fs.unlinkSync(setup.palettePath)
+    fs.unlinkSync(setup.palettePath)
     // fs.unlinkSync(setup.segmentPath)
+    fs.unlinkSync(setup.audioDataPath)
     return({path: setup.gifPath})
 }
 

@@ -14,6 +14,7 @@ const watch = require(`./src/tools/button-bot/watcher`)
 const videoToStills = require(`./src/tools/image-bot/video-to-stills`)
 
 require('dotenv').config();
+require("dotenv").config({ path: __dirname + `/.env` });
 
 // store any arguments passed in using yargs
 var yargs = require('yargs').argv;
