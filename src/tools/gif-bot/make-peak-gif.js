@@ -132,23 +132,6 @@ const analyzeAudio = async function (videofilePath, options) {
   })
 }
 
-
-// function findMinMaxIndex(arr, prop) {
-//   var smoothedArray = getMovingAverage(arr, 48);
-//   gray(smoothedArray)
-//   let minElIndex = smoothedArray[0], maxElIndex = smoothedArray[0];
-//   for (let i = 1; i < smoothedArray.length; i++) {
-//     let thisVal = parseFloat(smoothedArray[i][prop]);
-//     if (thisVal > smoothedArray[maxElIndex][prop]) {
-//       maxElIndex = i
-//     }
-//     if (thisVal < smoothedArray[minElIndex][prop]) {
-//       minElIndex = i
-//     }
-//   }
-//   return {minIndex: minElIndex, minIndex: maxElIndex};
-// }
-
 function findMinMax(arr, prop) {
   var smoothedArray = getMovingAverage(arr, 48);
   // gray(smoothedArray)
@@ -209,11 +192,6 @@ function makeGif(setup) {
 }
 
 module.exports = makePeakGif;
-
-
-
-
-
 
 
 
