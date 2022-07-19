@@ -22,6 +22,7 @@ app.message('hello', messageHandler.hello);
 app.command('/switch', slashHandler.switch);
 app.command('/a8ksync', slashHandler.a8ksync);
 app.command('/log', slashHandler.log);
+app.command('/getstills', slashHandler.hundredStills)
 // app.command('/synca8k', slashHandler.synca8k);
 
 app.event("file_shared", eventHandler.fileShared);
