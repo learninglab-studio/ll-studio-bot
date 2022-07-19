@@ -1,5 +1,8 @@
 const atemTools = require(`./utilities/atem-tools`)
 var Airtable = require('airtable');
+var fs = require('fs');
+var path = require('path');
+const { ConsoleLogger } = require('@slack/logger');
 
 exports.switch = async ({ command, ack, say }) => {
     ack();
@@ -42,7 +45,9 @@ exports.hundredStills = async ({ command, ack, say }) => {
         // console.log(JSON.stringify(element, null, 4));
         theEDL+=`${(i+1).toString().padStart(3, "0")}  AX       V     C        ${inTc(element.fields.Timecode)} ${outTc(element.fields.Timecode)} ${framesToTimecode(i)} ${framesToTimecode(i+1)}\n* FROM CLIP NAME: ${element.fields.VideoFileName}\n\n`
     }
-    await say(`we'll get your EDL from ${command.text}. Is this it? \n\`\`\`${theEDL}\`\`\``)
+    const pathForEDL = path.join(process.env.EXPORTS_FOLDER, `the-${command.text}-stills-${Date.now()}.edl`)
+    await say(`we'll get your EDL from ${command.text} and we'll save it here: ${pathForEDL}. Head over to the Main Mac Studio to import it into resolve.`)
+    await fs.writeFileSync(pathForEDL, theEDL)
 }
 
 exports.rocket = async ({ message, say }) => {
@@ -72,15 +77,21 @@ const findManyByValue = async function(options) {
   
 const framesToTimecode = (frames) => {
     const theFrames = frames%24
-    const theSeconds = (frames - theFrames)%60
-    const theMinutes = (frames - theFrames - theSeconds*24)
+    console.log(`theFrames: ${theFrames}`)
+    const theSeconds =((frames - theFrames)/24)%60
+    console.log(`theSeconds: ${theSeconds}`)
+
+    const theMinutes = (frames - theFrames - theSeconds*24)/(24*60)%60
+    
+    console.log(`theMinutes: ${theMinutes}`)
+
     return `00:${theMinutes.toString().padStart(2, "0")}:${theSeconds.toString().padStart(2, "0")}:${theFrames.toString().padStart(2, "0")}`
 }
 
 const inTc = (atc) => {
     console.log(`getting inTc from ${atc}.`)
     var ms = parseFloat(atc.split(".")[1])
-    console.log(`ms are ${ms}.`)
+    // console.log(`ms are ${ms}.`)
     return `${atc.split(".")[0]}:${Math.floor(ms*24/1000).toString().padStart(2, "0")}`
 }
 
