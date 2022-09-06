@@ -22,6 +22,31 @@ module.exports.switch = async (options) => {
     }, 10000)
 }
 
+
+module.exports.macro = async (options) => {
+    console.log(`starting the ATEM macro`);
+    const myAtem = new Atem();
+    myAtem.on('info', console.log)
+    myAtem.on('error', () => {console.error})
+    myAtem.connect(options.atemIp)
+    myAtem.on('connected', () => {
+        myAtem.macroRun(parseInt(options.macro)).then(() => {
+            console.log(`ran macro ${options.macro}. now ending the connection`);
+            console.log(myAtem.state.macro)
+            myAtem.disconnect()
+        })
+    })
+    myAtem.on('disconnected', () => {
+        console.log(`now disconnected from the ATEM. bye.`);
+    })
+    // if we can't connect within 10 seconds we'll give up
+    setTimeout(()=>{
+        myAtem.destroy();
+        console.log(`sorry, we couldn't connect to the ATEM`);
+    }, 10000)
+}
+
+
 module.exports.syncToClock = async (options) => {
     console.log(`starting the ATEM connection to sync`);
     const myAtem = new Atem(options.atemIp);

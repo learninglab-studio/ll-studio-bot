@@ -14,6 +14,17 @@ exports.switch = async ({ command, ack, say }) => {
     })
 }
 
+exports.macro = async ({ command, ack, say }) => {
+    ack();
+    console.log(JSON.stringify(command, null, 4))
+    console.log(`let's try a simple switch to camera ${command.text}`)
+    await atemTools.macro({
+        atemIp: process.env.A8K_IP,
+        macro: command.text
+    })
+}
+
+
 exports.log = async ({ command, ack, say }) => {
     ack();
     console.log(`log request`)
