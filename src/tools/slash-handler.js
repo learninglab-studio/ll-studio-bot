@@ -3,6 +3,8 @@ var Airtable = require('airtable');
 var fs = require('fs');
 var path = require('path');
 const { ConsoleLogger } = require('@slack/logger');
+const atemButtonBlocks = require('./atem-bot/atem-button-blocks')
+const llog = require('./utilities/ll-logs')
 
 exports.switch = async ({ command, ack, say }) => {
     ack();
@@ -23,6 +25,23 @@ exports.macro = async ({ command, ack, say }) => {
         macro: command.text
     })
 }
+
+exports.atemButtons = async ({ command, client, ack, say }) => {
+    ack();
+    console.log(JSON.stringify(command, null, 4))
+    console.log(`let's try a simple switch to camera ${command.text}`)
+    const blx = await atemButtonBlocks()
+    llog.blue(atemButtonBlocks)
+    await say({
+        blocks: blx,
+        channel: command.user_id,
+        text: `this game requires blocks`
+    })
+}
+
+
+
+
 
 
 exports.log = async ({ command, ack, say }) => {
