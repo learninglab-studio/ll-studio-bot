@@ -12,6 +12,7 @@ const makePeakGif = require('./src/tools/gif-bot/make-peak-gif')
 const { makeShootProxy, makeMonthOfProxy } = require(`./src/tools/proxy-bot/make-proxy`);
 const watch = require(`./src/tools/button-bot/watcher`)
 const videoToStills = require(`./src/tools/image-bot/video-to-stills`)
+const { hyperFormat } = require(`./src/tools/hyperdeck-bot`)
 
 require('dotenv').config();
 require("dotenv").config({ path: __dirname + `/.env` });
@@ -44,6 +45,8 @@ if (yargs.mk) {
     watch(yargs.bwFolder)
 } else if (yargs.v2s) {
     videoToStills(yargs.v2s)
+} else if (yargs.hyperformat) {
+    hyperFormat()
 } else {
     console.log(`sorry, you didn't enter a recognized command.`)
 }
