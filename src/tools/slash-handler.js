@@ -28,15 +28,27 @@ exports.macro = async ({ command, ack, say }) => {
 
 exports.atemButtons = async ({ command, client, ack, say }) => {
     ack();
-    console.log(JSON.stringify(command, null, 4))
-    console.log(`let's try a simple switch to camera ${command.text}`)
-    const blx = await atemButtonBlocks()
-    llog.blue(atemButtonBlocks)
-    await say({
-        blocks: blx,
-        channel: command.user_id,
-        text: `this game requires blocks`
-    })
+    try {
+        llog.red(command, null, 4)
+        console.log(`let's try a simple switch to camera ${command.text}`)
+        const blx = await atemButtonBlocks()
+        llog.blue(blx)
+        if (command.channel_name !== "directmessage") {
+            await say({
+                blocks: blx,
+                text: `this game requires blocks`
+            })
+        } else {
+            await client.chat.postMessage({
+                blocks: blx,
+                channel: command.user_id,
+                text: `this game requires blocks`
+            })
+        }
+    } catch (error) {
+        llog.red(error)
+    }
+    
 }
 
 
