@@ -7,16 +7,18 @@ const { cyan, blue, yellow, magenta, gray, white, divider } = require(`../utilit
 var intervalToDuration = require('date-fns/intervalToDuration')
 var format = require('date-fns/format')
 
-const makeBlackandWhite = async function (file) {
-  
+
+
+const tgaToPng = async function (file) {
+    console.log(``)
     if (imageRegex.test(file)) {
-        magenta(`making a black and white image from ${file}`)
-        const bwPath = path.join(path.dirname(file), `${path.basename(file, path.extname(file))}-bw.png`)
-        blue(bwPath)
+        magenta(`creating png from ${file}`)
+        const clrPath = path.join(path.dirname(file), `${path.basename(file, path.extname(file))}-clr.png`)
+        blue(clrPath)
         await cp.spawnSync('ffmpeg', [
             '-i', file,
-            `-vf`, `eq=contrast=1.7:brightness=0.2:saturation=0`,
-            bwPath
+            `-vf`, `eq=contrast=1:brightness=0:saturation=1`,
+            clrPath
           ], {
             stdio: [
               0, // Use parent's stdin for child
@@ -24,7 +26,7 @@ const makeBlackandWhite = async function (file) {
               2 // Direct child's stderr to a file
             ]
           });
-        blue(`done creating ${bwPath}`)
+        blue(`done creating ${clrPath}`)
         
     } else {
         gray(`${file} is not an image`)
@@ -34,5 +36,5 @@ const makeBlackandWhite = async function (file) {
 // ffmpeg -i /Users/mk/Desktop/mk-1.jpg -vf "eq=contrast=2:brightness=0.3:saturation=0" /Users/mk/Desktop/mk-1-ffmpeg-test-5.jpg
 
 
-module.exports = makeBlackandWhite;
+module.exports = tgaToPng;
 
