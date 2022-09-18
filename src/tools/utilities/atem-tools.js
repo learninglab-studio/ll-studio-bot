@@ -9,7 +9,11 @@ module.exports.switch = async (options) => {
     myAtem.on('connected', () => {
         myAtem.changeProgramInput(options.camera).then(() => {
             console.log(`program input set to ${options.camera}. now ending the connection`);
-            myAtem.disconnect()
+            if (options.script) {
+                process.exit()
+            } else {
+                myAtem.disconnect()
+            }
         })
     })
     myAtem.on('disconnected', () => {
@@ -30,11 +34,12 @@ module.exports.macro = async (options) => {
     myAtem.on('error', () => {console.error})
     myAtem.connect(options.atemIp)
     myAtem.on('connected', () => {
-        myAtem.macroRun(parseInt(options.macro)).then(() => {
-            console.log(`ran macro ${options.macro}. now ending the connection`);
-            console.log(myAtem.state.macro)
-            myAtem.disconnect()
-        })
+        myAtem.macroRun(parseInt(options.macro))
+            .then(() => {
+                console.log(`ran macro ${options.macro}. now ending the connection`);
+                console.log(myAtem.state.macro)
+                myAtem.disconnect()
+            })
     })
     myAtem.on('disconnected', () => {
         console.log(`now disconnected from the ATEM. bye.`);
@@ -44,7 +49,37 @@ module.exports.macro = async (options) => {
         myAtem.destroy();
         console.log(`sorry, we couldn't connect to the ATEM`);
     }, 10000)
+    
 }
+
+
+
+module.exports.getState = async (options) => {
+    return new Promise((resolve, reject) => {
+        console.log(`starting the ATEM getState`);
+        const myAtem = new Atem();
+        myAtem.on('info', console.log)
+        myAtem.on('error', () => {console.error})
+        myAtem.connect(options.atemIp)
+        myAtem.on('connected', () => {
+            // console.log(myAtem.state.macro)
+            resolve(myAtem.state)
+            myAtem.disconnect()
+            
+        })
+        myAtem.on('disconnected', () => {
+            console.log(`now disconnected from the ATEM. bye.`);
+        })
+        // if we can't connect within 10 seconds we'll give up
+        setTimeout(()=>{
+            myAtem.destroy();
+            console.log(`sorry, we couldn't connect to the ATEM`);
+            reject("sorry, there was an error")
+        }, 10000)
+    })
+    
+}
+
 
 
 module.exports.syncToClock = async (options) => {

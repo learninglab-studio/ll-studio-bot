@@ -20,7 +20,7 @@ const doTheThing = async (source) => {
     })
     myAtem.on('disconnected', () => {
         console.log(`now disconnected from the ATEM. bye.`);
-        process.exit()
+        return("done")
     })
     // if we can't connect within 10 seconds we'll give up
     setTimeout(()=>{
@@ -36,7 +36,9 @@ if (yargs) {
    console.log(JSON.stringify(yargs, null, 4))
    console.log(`switching to ${yargs._[0]}`)
    doTheThing(yargs._[0])
-//    console.log("done")
+
+   console.log("done")
+   process.exit()
 } else {
     console.log(`sorry, you didn't enter a recognized command.`)
 }

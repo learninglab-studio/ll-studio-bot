@@ -9,7 +9,8 @@
   },
   "bin": {
     "lls": "cli.js",
-    "switch": "switch.js"
+    "switch": "switch.js",
+    "mklls": "mk.js"
   },
   "repository": {
     "type": "git",
