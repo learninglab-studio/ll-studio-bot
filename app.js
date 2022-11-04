@@ -29,6 +29,7 @@ app.command('/macro', slashHandler.macro);
 app.command('/atembuttons', slashHandler.atemButtons)
 app.command('/log', slashHandler.log);
 app.command('/getstills', slashHandler.hundredStills)
+app.command('/hub', slashHandler.hub)
 // app.command('/synca8k', slashHandler.synca8k);
 
 app.event("file_shared", eventHandler.fileShared);

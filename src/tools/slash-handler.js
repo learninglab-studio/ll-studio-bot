@@ -4,6 +4,7 @@ var fs = require('fs');
 var path = require('path');
 const { ConsoleLogger } = require('@slack/logger');
 const atemButtonBlocks = require('./atem-bot/atem-button-blocks')
+const hubButtonBlocks = require('./atem-bot/hub-button-blocks')
 const llog = require('./utilities/ll-logs')
 
 exports.switch = async ({ command, ack, say }) => {
@@ -52,7 +53,30 @@ exports.atemButtons = async ({ command, client, ack, say }) => {
 }
 
 
-
+exports.hub =  async ({ command, client, ack, say }) => {
+    ack();
+    try {
+        llog.blue(command, null, 4)
+        console.log(`hub command ${command.text}`)
+        const blx = await hubButtonBlocks()
+        llog.blue(blx)
+        if (command.channel_name !== "directmessage") {
+            await say({
+                blocks: blx,
+                text: `this game requires blocks`
+            })
+        } else {
+            await client.chat.postMessage({
+                blocks: blx,
+                channel: command.user_id,
+                text: `this game requires blocks`
+            })
+        }
+    } catch (error) {
+        llog.red(error)
+    }
+    
+}
 
 
 
