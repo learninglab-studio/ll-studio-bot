@@ -6,6 +6,7 @@ const { ConsoleLogger } = require('@slack/logger');
 const atemButtonBlocks = require('./atem-bot/atem-button-blocks')
 const hubButtonBlocks = require('./atem-bot/hub-button-blocks')
 const llog = require('./utilities/ll-logs')
+const hubUtils = require('./atem-bot/hub-utilities')
 
 exports.switch = async ({ command, ack, say }) => {
     ack();
